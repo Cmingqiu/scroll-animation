@@ -1,9 +1,15 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import px2vw from 'postcss-px-to-viewport';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': resolve('./src')
+    }
+  },
   css: {
     postcss: {
       plugins: [

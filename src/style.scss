@@ -15,10 +15,15 @@ body {
  */
 
 body.loaded {
-  height: 300vh;
+  height: 400vh;
+  background-color: #000;
 }
 body::-webkit-scrollbar {
   /* display: none; */
+}
+
+section {
+  height: 300vh;
 }
 
 /* .hide {
