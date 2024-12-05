@@ -222,8 +222,8 @@ function init() {
 .sticky-block {
   height: 100vh;
   width: 100vw;
-  /* position: sticky; */
-  position: fixed;
+  position: sticky;
+  /* position: fixed; */
   top: 0;
   /* display: flex; */
   /* overflow: hidden; */
@@ -231,6 +231,7 @@ function init() {
   /* align-items: center; */
   transition: opacity 0.4s;
   opacity: 0;
+  overflow: hidden;
 
   .xbot-model-s.ignore {
     z-index: 1;
