@@ -1,23 +1,22 @@
 <template>
   <div class="wrap" ref="section">
-    <!-- <div ref="sblk" > -->
-
     <div class="wrap--1">
       <div class="title">
         <p class="ignore">Amazing</p>
         <p>Coffee Experience</p>
       </div>
       <div class="bottom-img-container ignore">
-        <img src="/imgs/coffee/1.png" alt="" srcset="" />
-        <img src="/imgs/coffee/2.png" alt="" srcset="" />
+        <img class="coffee1" src="/imgs/coffee/1.png" alt="" srcset="" />
+        <img class="coffee2" src="/imgs/coffee/2.png" alt="" srcset="" />
       </div>
     </div>
 
     <div class="wrap--2">
       <div class="matrix">
-        <ul class="row" v-for="rowIndex in 3" :key="i">
+        <ul class="row" v-for="rowIndex in 3" :key="rowIndex">
           <li class="card ignore" v-for="cardIndex in 4" :key="cardIndex">
             <img
+              :class="`card${rowIndex}-${cardIndex}`"
               :src="`/imgs/coffee/${rowIndex}-${cardIndex}.png`"
               alt=""
               srcset="" />
@@ -25,26 +24,166 @@
         </ul>
       </div>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, ShallowRef } from 'vue';
+import { useTemplateRef, onMounted, ShallowRef, onUnmounted } from 'vue';
 
-const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
-const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
-// const canvasRef: Readonly<ShallowRef<HTMLCanvasElement>> =  useTemplateRef('scrollAnimation');
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { gsap } from 'gsap';
+import useScrollPercent from '@/hooks/useScrollPercent';
 
+const sectionRef: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const { isLast = false } = defineProps<{ isLast?: boolean }>();
-onMounted(() => init());
 
+const { targetPercent } = useScrollPercent(sectionRef, isLast);
+
+// 注册插件
+gsap.registerPlugin(ScrollTrigger);
+
+let ctx: gsap.Context;
+onMounted(init);
+onUnmounted(() => {
+  ctx.revert();
+});
 function init() {
   const html = document.documentElement;
-  let currentPercent = 0,
-    targetPercent = 0; // 滚动的百分百
+  let currentPercent = 0;
+
+  const mainTL = gsap.timeline();
+  mainTL.add(coffeeFall()) /* .add(cardMatrixTL(), '<') */;
+
+  // 咖啡杯回落
+  function coffeeFall() {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.wrap--1',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+        markers: true
+      }
+    });
+
+    tl.to('.wrap--1 .coffee1', {
+      x: '-=560',
+      y: '+=750',
+      scale: 0.5,
+      duration: 1
+    })
+      .to(
+        '.wrap--1 .coffee2',
+        {
+          x: '-=560',
+          y: '+=750',
+          scale: 0.5,
+          duration: 1
+        },
+        '<'
+      )
+      .to('.wrap--2', {
+        opacity: 1
+      })
+      .from(
+        '.matrix',
+        {
+          opacity: 0,
+          scale: 3
+          // y: '+=400'
+        },
+        '<'
+      );
+    return tl;
+  }
+
+  // 卡片由大到小，透明度由暗到明
+  function cardMatrixTL() {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.wrap--2',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+        markers: true
+      }
+    });
+    tl.from('.matrix', {
+      opacity: 0,
+      scale: 2,
+      y: '+=100',
+      scrollTrigger: {
+        trigger: '.matrix',
+        scrub: true
+      }
+    });
+    return tl;
+  }
+
+  // ctx = gsap.context(() => {
+  //   const tl =
+  //     gsap.timeline(); /* { repeat: -1, yoyo: true, repeatDelay: 0.5 } */
+  //   tl.to('.coffee1', {
+  //     x: '-=560',
+  //     y: '+=750',
+  //     scale: 0.5,
+  //     duration: 1,
+  //     scrollTrigger: {
+  //       trigger: '.coffee1',
+  //       start: 'top center',
+  //       // end: 'top 190%',
+  //       scrub: 1
+  //       // pin: '.card1-1'
+  //     }
+  //   })
+  //     .to(
+  //       '.coffee2',
+  //       {
+  //         x: '-=560',
+  //         y: '+=750',
+  //         scale: 0.5,
+  //         // duration: 1,
+  //         scrollTrigger: {
+  //           trigger: '.coffee2',
+  //           start: 'top center',
+  //           scrub: 1
+  //           // pin: '.card1-1'
+  //         }
+  //       }
+  //       // '<'
+  //     )
+  //     .from(
+  //       '.matrix',
+  //       {
+  //         opacity: 0,
+  //         scale: 2,
+  //         y: '+=100',
+  //         duration: 3
+  //         // scrollTrigger: {
+  //         //   trigger: '.matrix',
+  //         //   // start: 'top top',
+  //         //   // end: 'top center',
+  //         //   scrub: true
+  //         // }
+  //       }
+  //       // '<'
+  //     );
+  // });
+
+  /*  tl.to('.bottom-img-container', {
+    opacity: 0,
+    x: '-=100',
+    y: '+=400',
+    // y: 50,
+    // rotation: 360,
+    scale: 0.5,
+    duration: 1
+  });  */
+  /* .to('.bottom-img-container', {
+    rotation: 360,
+    duration: 1
+  }); */
 
   function resizeCanvas(canvas: HTMLCanvasElement) {
     canvas.height = window.innerHeight;
@@ -65,59 +204,32 @@ function init() {
   // });
 
   function animate() {
-    changeCoffeePosi(targetPercent);
+    // console.log('==> ', targetPercent.value);
+    changeCoffeePosi(targetPercent.value);
     window.requestAnimationFrame(animate);
   }
 
   function changeCoffeePosi(percent: number) {
-    // let idx = frameIdx - 1;
-
-    // // 边界防跨越
-    // if (idx < 0) idx = 0;
-    // if (idx > allImgs.length) idx = allImgs.length - 1;
+    // 边界防跨越
+    if (percent < 0) percent = 0;
+    else if (percent > 1) percent = 1;
     // drawImgWhoFillsCanvas(canvas, allImgs[idx]);
     // currentPercent = idx;
-    gsap.fromTo('.bottom-img-container', {}, {});
+    // gsap.fromTo(
+    //   '.bottom-img-container',
+    //   { opacity: 1 ,duration:2},
+    //   { opacity: 0.2, x: 10 }
+    // );
   }
-
-  /**
-   * 根据滚动百分百
-   */
-  function calcPercent(
-    el: HTMLElement,
-    scrollTop: number,
-    scrollTotal: number
-  ) {
-    let scrolledPercent = (scrollTop - el.offsetTop) / scrollTotal;
-    scrolledPercent = Math.min(scrolledPercent, 1);
-    return scrolledPercent;
-  }
-
-  // 不应该把draw回调放在scroll事件回调
-  // 应该放在requestAnimationFrame里，也就是浏览器重绘的钩子里
-  window.addEventListener('scroll', e => {
-    const scrollTop = html.scrollTop;
-    const scrollStart = blk.value.offsetTop; // - html.clientHeight / 2;
-    const scrollEnd =
-      blk.value.offsetTop +
-      blk.value.offsetHeight -
-      (isLast ? html.clientHeight : 0);
-    const scrollTotal = scrollEnd - scrollStart;
-
-    if (scrollStart <= scrollTop && scrollTop <= scrollEnd) {
-      targetPercent = calcPercent(blk.value, scrollTop, scrollTotal);
-      console.log('targetPercent：  ', targetPercent);
-    } else {
-    }
-  });
 }
 </script>
 
 <style scoped lang="scss">
 .wrap {
   position: relative;
-  /* height: 100vh;
-  width: 100vw; */
+  /* padding-bottom: 100vh; */
+  height: 200vh;
+  width: 100vw;
   /* position: sticky; */
   /* display: flex; */
   /* justify-content: center; */
@@ -129,7 +241,7 @@ function init() {
   }
 
   .wrap--1 {
-    overflow: hidden;
+    padding-top: 10px;
     .title {
       color: #fff;
       margin-top: 200px;
@@ -163,6 +275,12 @@ function init() {
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
     .row {
       display: flex;
       align-items: center;
