@@ -13,7 +13,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        px2vw({
+       /*  px2vw({
           // 要转化的单位
           unitToConvert: 'px',
           // UI设计稿的大小
@@ -40,7 +40,7 @@ export default defineConfig({
           include: [],
           // 是否处理横屏情况
           landscape: false
-        })
+        }) */
       ]
     }
   }
