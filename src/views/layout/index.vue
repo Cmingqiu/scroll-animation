@@ -52,16 +52,19 @@ const menus = [
 </script>
 
 <style lang="scss" scoped>
-$headerHeight: 6.77vw;
-$headerMinHeight: 90px;
 .layout {
+  padding-top: $headerHeight;
   header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     height: $headerHeight;
     min-height: $headerMinHeight;
     align-items: center;
     justify-content: space-between;
-    background-color: #000;
+    background-color: $black;
     .logo {
       width: 63px;
       height: 65px;
@@ -83,8 +86,8 @@ $headerMinHeight: 90px;
   }
 
   main {
-    height: calc(100vh - $headerHeight);
-    max-height: calc(100vh - $headerMinHeight);
+    /* height: calc(100vh - $headerHeight); */
+    /* max-height: calc(100vh - $headerMinHeight); */
     position: relative;
   }
 }

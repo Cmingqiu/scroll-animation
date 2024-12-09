@@ -11,9 +11,14 @@ export default defineConfig({
     }
   },
   css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/variable.scss" as *;`
+      }
+    },
     postcss: {
       plugins: [
-       /*  px2vw({
+        /*  px2vw({
           // 要转化的单位
           unitToConvert: 'px',
           // UI设计稿的大小

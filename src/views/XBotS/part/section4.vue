@@ -3,7 +3,7 @@
     <p class="xbot-model-s ignore" ref="xbotModelS">XBOT-Model S</p>
     <video
       ref="video"
-      src="/videos/spatial.mp4"
+      src="/videos/video1.mp4"
       muted
       loop
       preload="auto"
@@ -56,14 +56,14 @@ function init() {
   window.addEventListener('scroll', e => {
     // scrollTop: 滚动条纵坐标距离整个网页最顶部的距离
     const scrollTop = html.scrollTop;
-
     // 视频到屏幕一半的时候播放
     if (
       blk.value.offsetTop - html.clientHeight / 2 <= scrollTop &&
       scrollTop <=
         blk.value.offsetTop +
           blk.value.offsetHeight -
-          (isLast ? html.clientHeight : 0)
+          (isLast ? html.clientHeight : 0) +
+          100
     ) {
       video.value.play();
       const { scrolledPercent } = calcTargetFrameIndex(blk.value, scrollTop);
@@ -85,7 +85,8 @@ function init() {
 <style scoped lang="scss">
 .video-wrap {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - $headerHeight);
+  max-height: calc(100vh - $headerMinHeight);
   position: relative;
   overflow: hidden;
   .xbot-model-s.ignore {

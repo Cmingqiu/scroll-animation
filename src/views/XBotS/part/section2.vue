@@ -12,8 +12,8 @@ import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
-const IMG_DIR = 'test';
-const frameCnt = 22;
+const IMG_DIR = 'robot-avif';
+const frameCnt = 271;
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
 const canvasRef: Readonly<ShallowRef<HTMLCanvasElement>> =
@@ -54,7 +54,7 @@ function init() {
       name: IMG_DIR,
       frameCnt,
       imgs: [],
-      rawUrl: `/imgs/${IMG_DIR}/0001.png`
+      rawUrl: `/imgs/${IMG_DIR}/0001.avif`
       // curFrameIdx: 0,
     }
   ];
@@ -65,7 +65,7 @@ function init() {
     const padIdx = frameIdx.toString().padStart(4, '0');
     const originUrl = sections[sectionIdx].rawUrl;
     const modifiedUrl =
-      originUrl.substring(0, originUrl.lastIndexOf('/')) + `/${padIdx}.png`;
+      originUrl.substring(0, originUrl.lastIndexOf('/')) + `/${padIdx}.avif`;
     return modifiedUrl;
   };
 
@@ -220,11 +220,12 @@ function init() {
 
 <style scoped lang="scss">
 .sticky-block {
-  height: 100vh;
+  height: calc(100vh - $headerHeight);
+  max-height: calc(100vh - $headerMinHeight);
+  bottom: 0;
   width: 100vw;
   /* position: sticky; */
   position: fixed;
-  top: 0;
   /* display: flex; */
   /* overflow: hidden; */
   /* justify-content: center; */

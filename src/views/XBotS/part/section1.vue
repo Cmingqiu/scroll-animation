@@ -233,11 +233,12 @@ function init() {
 
 <style scoped lang="scss">
 .sticky-block {
-  height: 100vh;
+  height: calc(100vh - $headerHeight);
+  max-height: calc(100vh - $headerMinHeight);
+  bottom: 0;
   width: 100vw;
   /* position: sticky; */
   position: fixed;
-  top: 0;
   /* display: flex; */
   /* overflow: hidden; */
   /* justify-content: center; */

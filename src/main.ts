@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-import './style.scss';
+import '@/styles/index.scss';
 import App from './App.vue';
 import router from '@/router';
 

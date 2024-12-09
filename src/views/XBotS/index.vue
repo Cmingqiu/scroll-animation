@@ -2,9 +2,9 @@
   <div>
     <Seciton1 />
     <Seciton2 />
-    <Seciton3 />
-    <Seciton4 />
-    <Seciton5 isLast />
+    <!-- <Seciton3 /> -->
+    <Seciton4 isLast />
+    <!-- <Seciton5 isLast /> -->
   </div>
 </template>
 
@@ -16,4 +16,7 @@ import Seciton4 from './part/section4.vue';
 import Seciton5 from './part/section5.vue';
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+div {
+}
+</style>
