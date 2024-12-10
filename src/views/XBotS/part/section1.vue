@@ -12,8 +12,8 @@ import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
-const IMG_DIR = 'coffee-robot';
-const frameCnt = 250;
+const IMG_DIR = 'robot-avif-bg';
+const frameCnt = 271;
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
 const canvasRef: Readonly<ShallowRef<HTMLCanvasElement>> =
@@ -55,7 +55,7 @@ function init() {
       name: IMG_DIR,
       frameCnt,
       imgs: [],
-      rawUrl: `/imgs/${IMG_DIR}/0001.png`
+      rawUrl: `/imgs/${IMG_DIR}/0001.avif`
       // curFrameIdx: 0,
     }
   ];
@@ -66,7 +66,7 @@ function init() {
     const padIdx = frameIdx.toString().padStart(4, '0');
     const originUrl = sections[sectionIdx].rawUrl;
     const modifiedUrl =
-      originUrl.substring(0, originUrl.lastIndexOf('/')) + `/${padIdx}.png`;
+      originUrl.substring(0, originUrl.lastIndexOf('/')) + `/${padIdx}.avif`;
     return modifiedUrl;
   };
 

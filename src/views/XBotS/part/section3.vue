@@ -12,7 +12,7 @@ import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
-const IMG_DIR = 'robot-avif';
+const IMG_DIR = 'robot-avif-bg';
 const frameCnt = 271;
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
