@@ -2,28 +2,21 @@ import { onMounted, onUnmounted, ref, ShallowRef, useTemplateRef } from 'vue';
 
 export default function (
   sectionRef: Readonly<ShallowRef<HTMLElement>>,
-  isLast: boolean
+  isLast: boolean,
+  scopedCb?: () => void,
+  unScopedCb?: () => void
 ) {
   // 滚动百分百
   const targetPercent = ref<number>(0);
 
-  // 计算滚动百分百
-  function calcPercent(
-    el: HTMLElement,
-    scrollTop: number,
-    scrollTotal: number
-  ) {
-    let scrolledPercent = (scrollTop - el.offsetTop) / scrollTotal;
-    scrolledPercent = Math.min(scrolledPercent, 1);
-    return scrolledPercent;
-  }
-
   function scrollEvent() {
     const html = document.documentElement;
+    const headerH = document.querySelector('header')!.offsetHeight;
     const scrollTop = html.scrollTop;
-    const scrollStart = sectionRef.value.offsetTop; // - html.clientHeight / 2;
+    const scrollStart = sectionRef.value.offsetTop - headerH; // - html.clientHeight / 2;
     const scrollEnd =
-      sectionRef.value.offsetTop +
+      sectionRef.value.offsetTop -
+      headerH +
       sectionRef.value.offsetHeight -
       (isLast ? html.clientHeight : 0);
     const scrollTotal = scrollEnd - scrollStart;
@@ -34,8 +27,10 @@ export default function (
         scrollTop,
         scrollTotal
       );
+      scopedCb && scopedCb();
       // console.log('targetPercent：  ', targetPercent.value);
     } else {
+      unScopedCb && unScopedCb();
     }
   }
 
@@ -51,4 +46,11 @@ export default function (
   });
 
   return { targetPercent };
+}
+
+// 计算滚动百分百
+function calcPercent(el: HTMLElement, scrollTop: number, scrollTotal: number) {
+  let scrolledPercent = (scrollTop - el.offsetTop) / scrollTotal;
+  scrolledPercent = Math.min(scrolledPercent, 1);
+  return scrolledPercent;
 }

@@ -12,7 +12,7 @@ import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
-const IMG_DIR = 'robot-avif-bg';
+const IMG_DIR = '/assets/imgs/robot-avif-bg';
 const frameCnt = 271;
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
@@ -49,13 +49,12 @@ function init() {
   // onscroll的回调负责更新这个值
   // requestAnimationFrame的回调draw负责每次取这个值画图
   let targetFrameIdx = 0;
-
   const sections: Sections = [
     {
       name: IMG_DIR,
       frameCnt,
       imgs: [],
-      rawUrl: `/imgs/${IMG_DIR}/0001.avif`
+      rawUrl: `${import.meta.env.VITE_ASSETS}/imgs/robot/0001.avif`
       // curFrameIdx: 0,
     }
   ];
@@ -177,13 +176,18 @@ function init() {
   // 不应该把draw回调放在scroll事件回调
   // 应该放在requestAnimationFrame里，也就是浏览器重绘的钩子里
   window.addEventListener('scroll', e => {
-    // scrollTop: 滚动条纵坐标距离整个网页最顶部的距离
+    const html = document.documentElement;
+    // const headerH = document.querySelector('header')!.offsetHeight;
     const scrollTop = html.scrollTop;
+    const scrollStart = blk.value.offsetTop; // - html.clientHeight / 2;
+    const scrollEnd =
+      blk.value.offsetTop +
+      blk.value.offsetHeight -
+      (isLast ? html.clientHeight : 0);
+    const scrollTotal = scrollEnd - scrollStart;
 
-    if (
-      blk.value.offsetTop <= scrollTop &&
-      scrollTop <= blk.value.offsetTop + blk.value.offsetHeight
-    ) {
+    if (scrollStart <= scrollTop && scrollTop <= scrollEnd) {
+      console.log(scrollStart, scrollTop, scrollEnd);
       sblk.value.style.opacity = '1';
       const { frameIdxByPercent, scrolledPercent } = calcTargetFrameIndex(
         blk.value,

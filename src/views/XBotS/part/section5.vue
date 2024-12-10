@@ -31,7 +31,6 @@
 import { useTemplateRef, onMounted, ShallowRef, onUnmounted } from 'vue';
 
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import useScrollPercent from '@/hooks/useScrollPercent';
 
@@ -39,9 +38,6 @@ const sectionRef: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const { isLast = false } = defineProps<{ isLast?: boolean }>();
 
 const { targetPercent } = useScrollPercent(sectionRef, isLast);
-
-// 注册插件
-gsap.registerPlugin(ScrollTrigger);
 
 let ctx: gsap.Context;
 onMounted(init);

@@ -1,14 +1,15 @@
 <template>
   <section ref="section">
     <div ref="sblk" class="sticky-block">
-      <p class="xbot-model-s ignore">XBOT-Model S2</p>
+      <p class="xbot-model-s ignore" ref="xbotModelS">XBOT-Model S 1</p>
       <canvas ref="scrollAnimation"></canvas>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, ShallowRef } from 'vue';
+import { useTemplateRef, onMounted, ShallowRef, watch } from 'vue';
+import useScrollPercent from '@/hooks/useScrollPercent';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
@@ -18,10 +19,28 @@ const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
 const canvasRef: Readonly<ShallowRef<HTMLCanvasElement>> =
   useTemplateRef('scrollAnimation');
+const xbotModelSRef = useTemplateRef('xbotModelS');
 
+const sectionRef: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const { isLast = false } = defineProps<{ isLast?: boolean }>();
-onMounted(() => init());
 
+const { targetPercent } = useScrollPercent(
+  sectionRef,
+  isLast,
+  () => {
+    sblk.value.style.opacity = '1';
+  },
+  () => {
+    sblk.value.style.opacity = '0';
+  }
+);
+
+watch(targetPercent, () => {
+  calcTargetFrameIndex(targetPercent.value);
+  // 文字滚动
+  calcTitleTranslateY(targetPercent.value);
+});
+onMounted(() => init());
 function init() {
   const html = document.documentElement;
   const canvas = canvasRef.value;
@@ -54,7 +73,7 @@ function init() {
       name: IMG_DIR,
       frameCnt,
       imgs: [],
-      rawUrl: `${import.meta.env.VITE_ASSETS}/imgs/0001.avif`
+      rawUrl: `${IMG_DIR}/0001.avif`
       // curFrameIdx: 0,
     }
   ];
@@ -140,81 +159,23 @@ function init() {
     drawImgWhoFillsCanvas(canvas, allImgs[idx]);
     currentFrameIdx = idx;
   }
-
-  // 利用闭包存上次滚动距离，方便滚动事件中计算滚动方向
-  let lastScrollTop = 0;
-
-  /**
-   * 根据滚动距离计算某个块应该渲染的图片帧编号
-   * @param frameObj
-   * @param el 包裹canvas块的元素
-   * @param scrollTop
-   * @returns
-   */
-  function calcTargetFrameIndex(el: HTMLElement, scrollTop: number) {
-    // el.offsetHeight: 元素的高度
-    // 分子加上 el.offsetHeight/2 是为了抵消中心偏差
-    // 结果：scrolled: [0, 1] 之间的百分比数字，用于计算目标图片帧的编号
-
-    // 百分比算法一
-    // let scrolledPercent = (scrollTop + el.offsetHeight / 2) / el.offsetHeight;
-
-    // 百分比算法二
-    // let scrolledPercent = scrollTop / (html.scrollHeight - html.clientHeight);
-    let scrolledPercent =
-      (scrollTop - el.offsetTop) /
-      (el.offsetHeight - (isLast ? html.clientHeight : 0));
-
-    scrolledPercent = Math.min(scrolledPercent, 1);
-    const frameIdxByPercent = Math.ceil(scrolledPercent * allImgs.length);
-
-    // let frameIdxNext = Math.min(currentFrameIdx + 1, allImgs.length);
-    // return Math.min(frameIdxByPercent, frameIdxNext);
-
-    return frameIdxByPercent;
-  }
-
-  // 不应该把draw回调放在scroll事件回调
-  // 应该放在requestAnimationFrame里，也就是浏览器重绘的钩子里
-  window.addEventListener('scroll', e => {
-    // scrollTop: 滚动条纵坐标距离整个网页最顶部的距离
-    const scrollTop = html.scrollTop;
-
-    if (
-      blk.value.offsetTop <= scrollTop &&
-      scrollTop <= blk.value.offsetTop + blk.value.offsetHeight
-    ) {
-      sblk.value.style.opacity = '1';
-      targetFrameIdx = calcTargetFrameIndex(blk.value, scrollTop);
-    } else {
-      sblk.value.style.opacity = '0';
-    }
-
-    // let opacity = scrolled;
-
-    // changeFrameTo(targetFrameIdx);
-
-    // 向下滚动
-    // if (scrollTop > lastScrollTop) {
-    //   if (targetFrameIdx >= allImgs.length) {
-    //     canvas.style.visibility = "hidden";
-    //   } else {
-    //     changeFrameTo(targetFrameIdx);
-    //   }
-    // }
-    // // 向上滚动
-    // else {
-    //   if (targetFrameIdx <= 0) {
-    //   } else if (targetFrameIdx >= allImgs.length) {
-    //     canvas.style.visibility = "visible";
-    //     changeFrameTo(targetFrameIdx);
-    //   } else {
-    //     // document.getElementById("remaster").style.opacity = opacity;
-    //   }
-    // }
-
-    lastScrollTop = scrollTop;
-  });
+}
+/**
+ * 根据滚动距离计算某个块应该渲染的图片帧编号
+ * @param frameObj
+ * @param el 包裹canvas块的元素
+ * @param scrollTop
+ * @returns
+ */
+function calcTargetFrameIndex(scrolledPercent: number) {
+  scrolledPercent = Math.min(scrolledPercent, 1);
+  const targetFrameIdx = Math.ceil(scrolledPercent * allImgs.length);
+  return targetFrameIdx;
+}
+function calcTitleTranslateY(scrolledPercent: number) {
+  xbotModelSRef.value.style.transform = `translateY(-${
+    scrolledPercent * 100
+  }%)`;
 }
 </script>
 
@@ -231,7 +192,7 @@ function init() {
   /* justify-content: center; */
   /* align-items: center; */
   transition: opacity 0.4s;
-  opacity: 0;
+  /* opacity: 0; */
 
   .xbot-model-s.ignore {
     z-index: 1;
@@ -241,7 +202,6 @@ function init() {
     // position: absolute;
     // top: 50%;
     // left: 50%;
-    // transform: translate(-50%, -50%);
     width: 1184px;
     font-family: Alfa Slab One;
     font-size: 150px;

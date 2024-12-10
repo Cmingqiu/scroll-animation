@@ -1,28 +1,23 @@
 <template>
-  <section ref="section">
-    <div ref="sblk" class="sticky-block">
-      <p class="xbot-model-s ignore" ref="xbotModelS">XBOT-Model S</p>
-      <video
-        ref="video"
-        :src="videoUrl"
-        muted
-        loop
-        preload="auto"
-        width="100%"
-        height="100%" />
-    </div>
-  </section>
+  <div ref="section" class="video-wrap">
+    <p class="xbot-model-s ignore" ref="xbotModelS">XBOT-Model S</p>
+    <video
+      ref="video"
+      src="/assets/videos/video1.mp4"
+      muted
+      loop
+      preload="auto"
+      width="100%"
+      height="100%" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, onMounted, ShallowRef, ref } from 'vue';
+import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
-const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
 const video: Readonly<ShallowRef<HTMLVideoElement>> = useTemplateRef('video');
 const xbotModelSRef = useTemplateRef('xbotModelS');
-
-const videoUrl = ref(import.meta.env.VITE_ASSETS + '/videos/video1.mp4');
 
 const { isLast = false } = defineProps<{ isLast?: boolean }>();
 onMounted(() => init());
@@ -71,13 +66,11 @@ function init() {
           100
     ) {
       video.value.play();
-      sblk.value.style.opacity = '1';
       const { scrolledPercent } = calcTargetFrameIndex(blk.value, scrollTop);
       // 文字滚动
       calcTitleTranslateY(scrolledPercent);
     } else {
       video.value.pause();
-      sblk.value.style.opacity = '0';
     }
   });
 
@@ -90,26 +83,6 @@ function init() {
 </script>
 
 <style scoped lang="scss">
-.sticky-block {
-  height: calc(100vh - $headerHeight);
-  max-height: calc(100vh - $headerMinHeight);
-  bottom: 0;
-  width: 100vw;
-  /* position: sticky; */
-  position: fixed;
-  /* display: flex; */
-  /* overflow: hidden; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  transition: opacity 0.4s;
-  opacity: 0;
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.5;
-  }
-}
 .video-wrap {
   width: 100vw;
   height: calc(100vh - $headerHeight);

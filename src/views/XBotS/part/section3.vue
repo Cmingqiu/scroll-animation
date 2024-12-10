@@ -1,7 +1,7 @@
 <template>
   <section ref="section">
     <div ref="sblk" class="sticky-block">
-      <p class="xbot-model-s ignore">XBOT-Model S</p>
+      <p class="xbot-model-s ignore">XBOT-Model S3</p>
       <canvas ref="scrollAnimation"></canvas>
     </div>
   </section>
@@ -12,7 +12,7 @@ import { useTemplateRef, onMounted, ShallowRef } from 'vue';
 // import PxLoaderImage from 'pxloader/PxLoaderImage';
 // import PxLoader from 'pxloader';
 
-const IMG_DIR = 'robot-avif-bg';
+const IMG_DIR = '/assets/imgs/robot-avif-bg';
 const frameCnt = 271;
 const blk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('section');
 const sblk: Readonly<ShallowRef<HTMLElement>> = useTemplateRef('sblk');
@@ -54,7 +54,7 @@ function init() {
       name: IMG_DIR,
       frameCnt,
       imgs: [],
-      rawUrl: `/imgs/${IMG_DIR}/0001.avif`
+      rawUrl: `${IMG_DIR}/0001.avif`
       // curFrameIdx: 0,
     }
   ];

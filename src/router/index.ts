@@ -35,7 +35,7 @@ export const routes = [
       {
         path: 'contact',
         name: 'Contact',
-        component: () => import('@/views/XBotSPlus/index.vue')
+        component: () => import('@/views/Contact/index.vue')
       }
     ]
   },
