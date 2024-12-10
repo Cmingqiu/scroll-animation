@@ -29,8 +29,8 @@ function init() {
   const loader = new window.PxLoader();
 
   function resizeCanvas(canvas: HTMLCanvasElement) {
-    canvas.height = sblk.value.offsetHeight;
-    canvas.width = sblk.value.offsetWidth;
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
   }
 
   // 窗口resize时需要重绘canvas
@@ -209,15 +209,15 @@ function init() {
 .sticky-block {
   height: calc(100vh - $headerHeight);
   max-height: calc(100vh - $headerMinHeight);
-  /* width: 100vw; */
+  width: 100vw;
   position: sticky;
-  top: $headerHeight;
+  top: 0;
   /* position: fixed; */
   /* display: flex; */
   /* overflow: hidden; */
   /* justify-content: center; */
   /* align-items: center; */
-  /* transition: opacity 0.4s; */
+  transition: opacity 0.4s;
   /* opacity: 0; */
 
   .xbot-model-s.ignore {

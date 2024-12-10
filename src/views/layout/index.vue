@@ -62,7 +62,7 @@ const menus = [
     left: 0;
     display: flex;
     height: $headerHeight;
-    min-height: $headerMinHeight;
+    /* min-height: $headerMinHeight; */
     align-items: center;
     justify-content: space-between;
     background-color: $black;
