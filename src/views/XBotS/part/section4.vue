@@ -1,5 +1,5 @@
 <template>
-  <section ref="section">
+  <div ref="section" style="height: 120vh">
     <div ref="sblk" class="sticky-block">
       <p class="xbot-model-s ignore" ref="xbotModelS">XBOT-Model S</p>
       <video
@@ -11,7 +11,7 @@
         width="100%"
         height="100%" />
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -29,16 +29,6 @@ onMounted(() => init());
 
 function init() {
   const html = document.documentElement;
-  function resizeCanvas(canvas: HTMLCanvasElement) {
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-  }
-
-  // 窗口resize时需要重绘canvas
-  window.addEventListener('resize', () => {
-    // resizeCanvas(canvas);
-    // drawImgWhoFillsCanvas(canvas, allImgs[currentFrameIdx]);
-  });
 
   /**
    * 根据滚动距离计算某个块应该渲染的图片帧编号
@@ -59,25 +49,26 @@ function init() {
   // 不应该把draw回调放在scroll事件回调
   // 应该放在requestAnimationFrame里，也就是浏览器重绘的钩子里
   window.addEventListener('scroll', e => {
-    // scrollTop: 滚动条纵坐标距离整个网页最顶部的距离
+    const html = document.documentElement;
+    const headerH = document.querySelector('header')!.offsetHeight;
     const scrollTop = html.scrollTop;
+    const scrollStart = blk.value.offsetTop - html.clientHeight / 2;
+    const scrollEnd =
+      blk.value.offsetTop +
+      blk.value.offsetHeight +
+      headerH -
+      (isLast ? html.clientHeight : 0);
+    const scrollTotal = scrollEnd - scrollStart;
     // 视频到屏幕一半的时候播放
-    if (
-      blk.value.offsetTop - html.clientHeight / 2 <= scrollTop &&
-      scrollTop <=
-        blk.value.offsetTop +
-          blk.value.offsetHeight -
-          (isLast ? html.clientHeight : 0) +
-          100
-    ) {
+    if (scrollStart <= scrollTop && scrollTop <= scrollEnd) {
+      // console.info('in: ', scrollTop, scrollStart, scrollEnd);
       video.value.play();
-      sblk.value.style.opacity = '1';
-      const { scrolledPercent } = calcTargetFrameIndex(blk.value, scrollTop);
+      // const { scrolledPercent } = calcTargetFrameIndex(blk.value, scrollTop);
       // 文字滚动
-      calcTitleTranslateY(scrolledPercent);
+      // calcTitleTranslateY(scrolledPercent);
     } else {
+      // console.info('out: ', scrollTop);
       video.value.pause();
-      sblk.value.style.opacity = '0';
     }
   });
 
@@ -93,16 +84,14 @@ function init() {
 .sticky-block {
   height: calc(100vh - $headerHeight);
   max-height: calc(100vh - $headerMinHeight);
-  bottom: 0;
-  width: 100vw;
-  /* position: sticky; */
-  position: fixed;
+  /* width: 100vw; */
+  position: sticky;
+  top: $headerHeight;
+  /* position: fixed; */
   /* display: flex; */
   /* overflow: hidden; */
   /* justify-content: center; */
   /* align-items: center; */
-  transition: opacity 0.4s;
-  opacity: 0;
   video {
     width: 100%;
     height: 100%;

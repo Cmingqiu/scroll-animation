@@ -3,7 +3,7 @@
     <Seciton1 class="panel" isLast />
     <!-- <Seciton2 class="panel" /> -->
     <!-- <Seciton3 class="panel" /> -->
-    <!-- <Seciton4 class="panel" isLast /> -->
+    <Seciton4 class="panel" isLast />
     <!-- <Seciton5 isLast /> -->
   </div>
 </template>

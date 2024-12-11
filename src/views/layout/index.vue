@@ -11,7 +11,12 @@
           >{{ menu.name }}</RouterLink
         >
       </nav>
-      <span></span>
+      <div class="contactWrap">
+        <span>Coffee Robot</span>
+        <router-link to="/contact" class="contact">
+          <div>Contact</div>
+        </router-link>
+      </div>
     </header>
     <main>
       <router-view />
@@ -26,27 +31,23 @@ import { RouterLink } from 'vue-router';
 const menus = [
   {
     path: '/',
-    name: 'XBOT-Model S'
+    name: 'Model S'
   },
   {
     path: 'xBotSPlus',
-    name: 'XBOT-Model S Plus'
+    name: 'Model S Plus'
   },
   {
     path: 'xBOTModelIC',
-    name: 'XBOT-Model IC'
+    name: 'Model IC'
   },
   {
     path: 'xBOTModelTk',
-    name: 'XBOT-Model Tk'
+    name: 'Model Tk'
   },
   {
     path: 'about',
     name: 'About Us'
-  },
-  {
-    path: 'contact',
-    name: 'Contact'
   }
 ];
 </script>
@@ -56,6 +57,7 @@ const menus = [
   padding-top: $headerHeight;
   header {
     width: 100%;
+    min-width: 1200px;
     position: fixed;
     z-index: 99;
     top: 0;
@@ -66,10 +68,11 @@ const menus = [
     align-items: center;
     justify-content: space-between;
     background-color: $black;
+    padding-left: 60px;
+    padding-right: 85px;
     .logo {
-      width: 63px;
+      width: 193px;
       height: 65px;
-      margin-left: 50px;
     }
     nav {
       display: flex;
@@ -82,6 +85,29 @@ const menus = [
         &:last-child {
           margin-right: 0;
         }
+      }
+    }
+    .contactWrap {
+      width: 288px;
+      height: 57px;
+      border-radius: 100px;
+      background-color: $white;
+      font-size: 18px;
+      font-weight: 700;
+      color: $black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .contact {
+        width: 117.54px;
+        height: 42px;
+        line-height: 42px;
+        border-radius: 100px;
+        background-color: $black;
+        color: rgba(249, 66, 58, 1);
+        text-align: center;
+        text-decoration: none;
+        margin-left: 16px;
       }
     }
   }

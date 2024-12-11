@@ -13,9 +13,9 @@ export default function (
     const html = document.documentElement;
     const headerH = document.querySelector('header')!.offsetHeight;
     const scrollTop = html.scrollTop;
-    const scrollStart = sectionRef.value.offsetTop - headerH; // - html.clientHeight / 2;
+    const scrollStart = sectionRef.value.offsetTop; // - html.clientHeight / 2;
     const scrollEnd =
-      sectionRef.value.offsetTop -
+      sectionRef.value.offsetTop +
       headerH +
       sectionRef.value.offsetHeight -
       (isLast ? html.clientHeight : 0);
